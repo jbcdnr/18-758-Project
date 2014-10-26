@@ -1,29 +1,21 @@
+%% load and plot the received signal
+
 load('receivedsignal.mat')
+x = receivedsignal;
+xi = real(x);
+xq = imag(x);
 
 figure
-plot(real(receivedsignal), 'b'); hold on
-plot(imag(receivedsignal), 'r')
+plot(xi, 'b'); hold on
+plot(xq, 'r')
 
-% Fourier transform
-xi = real(receivedsignal);
-Xi = real(fft(xi));
+%% remove the padding part of the signal
 
-% Remove frequency under 1kHz
-Xi(1:1000) = 0;
-
-% Find the carrier frequency
-[maxFreq, frequency] = max(Xi)
-
-figure
-plot(real(Xi), 'b')
-
-threshold = 0.04;
-
-%% cut the signal at interesting part
+threshold = 0.06;
 
 from= -1; to = -1;
-for i = 1:length(xi)
-  if abs(xi(i)) > threshold
+for i = 1:length(x)
+  if abs(x(i)) > threshold
     if from == -1
       from = i;
     end
@@ -31,15 +23,34 @@ for i = 1:length(xi)
   end
 end
 
-cutxi = xi(from:to);
-plot(cutxi)
+x = x(from:to);
+
+figure
+plot(real(x), 'b'); hold on
+plot(imag(x), 'r')
+
+%% Carrier recovery
+Xfft = fft(x);
+
+XModulus = abs(Xfft);
+XModulus(1:400) = 0;
+[modulus, frequency] = max(XModulus);
+phaseShift = angle(Xfft(frequency));
+
+t = [1:length(x)].';
+corrector = exp(-1i*(2*pi*frequency*t-phaseShift));
+xCorrected = x.*corrector
+
+figure
+plot(real(xCorrected), 'b'); hold on
+plot(imag(xCorrected), 'r')
 
 %% sampling
-rate = 10^3;
-T = rate / frequency;
+symbolRate = 10^6;
+T = symbolRate / frequency;
 samples = [];
-for i = [1:T:length(cutxi)]
-  samples = [ samples ((cutxi(floor(i)) > 0) * 2 -1) ];
+for i = [1:T:length(xi)]
+  samples = [ samples ((xi(floor(i)) > 0) * 2 -1) ];
 end
 
 plot(samples)

@@ -1,5 +1,5 @@
-carrierFrequency = 10^5; % Hz
-symbolRate = 10^3; % Hz
+carrierFrequency = 10^8; % Hz
+symbolRate = 10^6; % Hz
 samplesPerSymbol = carrierFrequency / symbolRate;
 
 freqSync = ones(1, 20);
