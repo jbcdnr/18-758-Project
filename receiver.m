@@ -45,6 +45,8 @@ figure
 plot(real(xCorrected), 'b'); hold on
 plot(imag(xCorrected), 'r')
 
+%% match filter
+
 %% sampling 
 symbolRate = 10^6; % Hz
 sampleFrequency = 25*10^6; % Hz
@@ -59,3 +61,5 @@ end
 
 figure
 plot(samples)
+
+%% Frame synchronisation
