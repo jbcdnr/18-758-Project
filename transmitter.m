@@ -1,6 +1,6 @@
-carrierFrequency = 10^8; % Hz
+sampleFrequency = 100 * 10^6; % Hz
 symbolRate = 10^6; % Hz
-samplesPerSymbol = carrierFrequency / symbolRate;
+samplesPerSymbol = sampleFrequency / symbolRate;
 
 freqSync = ones(1, 20);
 timingSync = [1 1 -1 1 1 -1 -1 1 1 1 -1 1 1 -1 1 -1 -1 1 1 1];
@@ -19,6 +19,7 @@ for i = 1:length(symbols)
     X = X + symbols(i) * rectpuls(Xi - t, samplesPerSymbol);
 end
 
+figure
 plot(Xi, X);
 
 transmitsignal = X;

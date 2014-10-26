@@ -45,12 +45,17 @@ figure
 plot(real(xCorrected), 'b'); hold on
 plot(imag(xCorrected), 'r')
 
-%% sampling
-symbolRate = 10^6;
-T = symbolRate / frequency;
-samples = [];
-for i = [1:T:length(xi)]
-  samples = [ samples ((xi(floor(i)) > 0) * 2 -1) ];
+%% sampling 
+symbolRate = 10^6; % Hz
+sampleFrequency = 25*10^6; % Hz
+n = sampleFrequency / symbolRate;
+samples = zeros(1, ceil(length(xCorrected) / n));
+i=1;
+for t = 1:n:length(xCorrected)
+  sample = xCorrected(floor(t));
+  samples(i) = (real(sample) > 0) * 2 - 1;
+  i=i+1;
 end
 
+figure
 plot(samples)
