@@ -16,9 +16,18 @@ function plotSignal(X, Fs)
     pan xon;
     zoom xon;
 
+    rgnA = abs(F) > 11.25;
+    rgnB = abs(F) > 12.5;
+    rgnC = abs(F) > 35;
+    valA = (abs(F) - 11.25) * -40 / 1.25;
+    valB = (abs(F) - 12.5) * -30 / 22.5 - 40;
+    envelope = zeros(length(F), 1);
+    envelope(rgnA) = valA(rgnA);
+    envelope(rgnB) = valB(rgnB);
+    envelope(rgnC) = -70;
+
     subplot(2, 1, 2);
-    %plotyy(F, abs(Y), F, angle(Y));
-    plot(F, abs(Y));
+    plot(F, 10*log10(abs(Y)), F, envelope);
     xlabel('Frequency (MHz)');
     pan xon;
     zoom xon;
