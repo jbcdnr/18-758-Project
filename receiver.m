@@ -1,85 +1,42 @@
-function receiver
 
-    load('receivedsignal.mat');
+% Setting variables
 
-    freqSync = ones(1, 20);
-    timingSync = [1 1 -1 1 1 -1 -1 1 1 1 -1 1 1 -1 1 -1 -1 1 1 1];
-    frameSync = [-1 -1 -1 -1 1 1 1 -1 -1 1 -1 -1 1 1 1 -1 -1 -1 -1];
-    pilot = [1 -1 1 -1 1 -1 1 -1 1 -1];
+load('receivedsignal.mat');
 
-    Fs = 25; % MHz
-    T = 2; % samples per symbol
-    L = length(receivedsignal);
+freqSync = ones(1, 20);
+timingSync = [1 1 -1 1 1 -1 -1 1 1 1 -1 1 1 -1 1 -1 -1 1 1 1];
+frameSync = [ 0 0 0 0 1 0 0 1 1 1 0 0 0 0 1 1 1 1 1 0 0 0 0 1 1 1 0 0 1 0 0 0 0 ];    
+pilot = [ 0.3517 + 0.8308i, 0.5853 + 0.5497i, 0.9172 + 0.2858i, 0.7572 + 0.7537i, 0.3804 + 0.5678i, 0.0759 + 0.0540i, 0.5308 + 0.7792i, 0.9340 + 0.1299i, 0.5688 + 0.4694i, 0.0119 + 0.3371i ];
 
-    % for now, assume preamble starts when the signal goes above some value
-    start = find(abs(receivedsignal) > 0.075, 1);
+messageSize = 40; % bits
+M = 4; % size of the constelation
 
-    freqSyncSignal = doFreqSync(receivedsignal, start, freqSync, Fs, T);
+receivedsignal = resample(receivedsignal, 4, 1);
 
-    plotSignal(freqSyncSignal, Fs);
+Fs = 100; % MHz
+symbolRate = 12.5; % MHz
+n = Fs / symbolRate; % samples per symbol
 
-    timingSyncStart = start + length(freqSync)*T;
+% Signal processing
 
-    [T_hat, tau_hat, theta_hat] = doTimingSync(freqSyncSignal, timingSyncStart, ...
-        timingSync, Fs, T)
+start = find(abs(receivedsignal) > 0.075, 1);
 
-    samples = doSampling(freqSyncSignal, T_hat, tau_hat, theta_hat);
+% Carrier recovery
+freqSyncSignal = doFreqSync(receivedsignal, start, freqSync, Fs, n);
 
-    figure();
-    stem([real(samples); imag(samples)]);
-    pan xon;
-    zoom xon;
+plotSignal(freqSyncSignal, Fs);
 
-end
+% Time recovery and sampling
+timingSyncStart = start + length(freqSync)*n;
+[T_hat, tau_hat, theta_hat] = doTimingSync(freqSyncSignal, timingSyncStart, timingSync, Fs, n);
 
-function y = doFreqSync(x, start, freqSync, Fs, T)
+samples = doSampling(freqSyncSignal, T_hat, tau_hat, theta_hat);
 
-    len = length(freqSync) * T;
-    sync = x(start : start + len - 1);
+% Frame synchronization
+[cutSamples, ~] = doFrameSync(samples, frameSync);
 
-    [~, f, X] = DTFT(sync, Fs, 5);
-
-    [~, maxSample] = max(abs(X));
-    delta = f(maxSample);
-    theta = -angle(X(maxSample));
-
-    t = ((0:length(x)-1)' - start) / Fs;
-    y = exp(-1j * ((2*pi*delta) * t - theta)) .* x;
-
-end
-
-function [T_hat, tau_hat, theta_hat] = doTimingSync(x, start, timingSync, Fs, T)
-
-    C_hat = 0;
-    T_hat = 0;
-    tau_hat = 0;
-    theta_hat = 0;
-
-    % TODO try more values...?
-    for T_prime = [T-1 T T+1]
-        nSamples = T_prime*(length(timingSync) + 1);
-        timingSignal = applyPulse(timingSync, nSamples, T_prime);
-        [C, lag] = xcorr(x, timingSignal);
-        [C_max, i_max] = max(C);
-        if (C_max > C_hat)
-            C_hat = C_max;
-            T_hat = T_prime;
-            tau_hat = lag(i_max);
-            theta_hat = angle(C(i_max));
-        end
-    end
-
-end
-
-function samples = doSampling(x, T_hat, tau_hat, theta_hat)
-
-    nSamples = 100;
-    samples = zeros(nSamples)';
-    phase = exp(1j * theta_hat);
-
-    for i = 1:nSamples
-        t = (1:length(x))' - tau_hat - i*T_hat;
-        samples(i) = phase * sum(rectpuls(t, T_hat) .* x);
-    end
-
-end
+% Equalization and decoding
+messageSymboles = equalize(pilot, cutSamples);
+messageSymboles = messageSymboles(1:messageSize / nextpow2(M));
+messageBits = M_PSK_decode(messageSymboles, M);
+disp(messageBits)
