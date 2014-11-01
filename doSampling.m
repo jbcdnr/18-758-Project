@@ -1,7 +1,7 @@
 
 function samples = doSampling(x, T_hat, tau_hat, theta_hat)
-
-    nSamples = 100;
+    % TODO sample dinamically
+    nSamples = 10000;
     samples = zeros(1, nSamples);
     phase = exp(1j * theta_hat);
 

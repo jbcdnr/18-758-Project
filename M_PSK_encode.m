@@ -1,9 +1,14 @@
 function symbolSequence = M_PSK_encode(bitSequence, M, r)
     b = nextpow2(M);
-    if 2^b ~= M || mod(length(bitSequence), b) ~= 0
+    if 2^b ~= M
         error('impossible encoding')
     end
     
+    padding = mod(length(bitSequence), b);
+    if padding ~= 0
+       bitSequence = [ bitSequence zeros(1, b - padding) ];
+    end
+       
     symbolSequence = zeros(1,length(bitSequence) / b);
     
     for i = 1:b:length(bitSequence)
