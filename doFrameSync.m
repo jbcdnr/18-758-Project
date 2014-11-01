@@ -3,7 +3,7 @@ function [cutSignal, index] = doFrameSync(signal, frameSync)
 % the beginning
 
     c = conv(signal, frameSync);
-    [~, index] = max(c);
-    cutSignal = signal(index:length(signal));
+    [~, index] = max(real(c));
+    cutSignal = signal(index + 1:length(signal));
     
 end

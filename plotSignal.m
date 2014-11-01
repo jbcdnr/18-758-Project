@@ -1,12 +1,12 @@
 function plotSignal(X, Fs)
 %PLOTSIGNAL Plots a complex signal in time and frequency domains
-%   X is the signal. Fs is the sample frequency in MHz.
+%   X is the signal. Fs is the sample frequency in Hz.
 
     if (isrow(X))
         X = X';
     end
 
-    [T, F, Y] = DTFT(X, Fs, 5);
+    [T, F, Y] = DTFT(X, Fs / 10^6, 5);
 
     figure();
 
