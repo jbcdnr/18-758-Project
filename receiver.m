@@ -3,9 +3,9 @@
 
 load('receivedsignal.mat');
 
-freqSync = ones(1, 20);
+freqSync = ones(1, 40);
 timingSync = [1 1 -1 1 1 -1 -1 1 1 1 -1 1 1 -1 1 -1 -1 1 1 1];
-frameSync = [ 0 0 0 0 1 0 0 1 1 1 0 0 0 0 1 1 1 1 1 0 0 0 0 1 1 1 0 0 1 0 0 0 0 ];    
+frameSync = [0 0 0 0 1 0 0 1 1 1 0 0 0 0 1 1 1 1 1 0 0 0 0 1 1 1 0 0 1 0 0 0 0]*2-1;
 pilot = [ 0.3517 + 0.8308i, 0.5853 + 0.5497i, 0.9172 + 0.2858i, 0.7572 + 0.7537i, 0.3804 + 0.5678i, 0.0759 + 0.0540i, 0.5308 + 0.7792i, 0.9340 + 0.1299i, 0.5688 + 0.4694i, 0.0119 + 0.3371i ];
 
 messageSize = 40; % bits
@@ -40,3 +40,13 @@ messageSymboles = equalize(pilot, cutSamples);
 messageSymboles = messageSymboles(1:messageSize / nextpow2(M));
 messageBits = M_PSK_decode(messageSymboles, M);
 disp(messageBits)
+
+figure;
+messageSamples = cutSamples(1:messageSize / nextpow2(M));
+plot(real(messageSamples), imag(messageSamples), 'o');
+figure;
+plot(real(messageSymboles), imag(messageSymboles), 'o');
+
+expectedMessageBits = [ 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1 ];
+BER = sum(messageBits ~= expectedMessageBits) / length(messageBits);
+fprintf('BER = %f\n', BER);
