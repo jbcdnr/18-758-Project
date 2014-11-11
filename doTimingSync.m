@@ -11,6 +11,9 @@ function [T_hat, tau_hat, theta_hat] = doTimingSync(x, start, timingSync, Fs, T)
         nSamples = T_prime*(length(timingSync) + 1);
         timingSignal = applyPulse(timingSync, nSamples, T_prime);
         [C, lag] = xcorr(x, timingSignal);
+        figure;
+        plot(abs(C));
+        title(strcat('T'' = ', num2str(T_prime)));
         [C_max, i_max] = max(C);
         if (C_max > C_hat)
             C_hat = C_max;
