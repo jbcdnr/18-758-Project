@@ -43,9 +43,10 @@ disp(messageBits)
 
 figure;
 messageSamples = cutSamples(1:messageSize / nextpow2(M));
-plot(real(messageSamples), imag(messageSamples), 'o');
+constelation = [1 1i -1 -1i];
+plot(real(messageSamples), imag(messageSamples), 'bo', real(constelation), imag(constelation), 'r*');
 figure;
-plot(real(messageSymboles), imag(messageSymboles), 'o');
+plot(real(messageSymboles), imag(messageSymboles), 'bo', real(constelation), imag(constelation), 'r*');
 
 expectedMessageBits = [ 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1 ];
 BER = sum(messageBits ~= expectedMessageBits) / length(messageBits);
