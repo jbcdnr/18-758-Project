@@ -1,11 +1,12 @@
-function X = applyPulse(symbols, nSamples, T)
+function X = applyPulse(symbols, n, alpha)
 
+    nSamples = n * (length(symbols) + 1);
     Xi = 1:nSamples;
     X = zeros(1, nSamples);
 
     for i = 1:length(symbols)
-        t = T*i;
-        X = X + symbols(i) * srrc(Xi - t, 0.5, T);
+        t = n*i;
+        X = X + symbols(i) * srrc(Xi - t, alpha, n);
     end
 
 end

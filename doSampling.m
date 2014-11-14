@@ -1,13 +1,18 @@
+function samples = doSampling(x, alpha, n, T_hat, tau_hat, theta_hat)
+% x         The received signal, after carrier recovery
+% alpha     The SRRC coefficient
+% T_hat     From timing recovery
+% tau_hat   From timing recovery
+% theta_hat From timing recovery
 
-function samples = doSampling(x, T_hat, tau_hat, theta_hat)
-
-    nSamples = 100;
+    nSamples = floor((length(x) - tau_hat) / T_hat);
     samples = zeros(1, nSamples);
-    phase = exp(1j * theta_hat);
 
     for i = 1:nSamples
         t = (1:length(x))' - tau_hat - i*T_hat;
-        samples(i) = phase * sum(srrc(t, 0.5, T_hat) .* x);
+        samples(i) = sum(srrc(t, alpha, T_hat) .* x);
     end
+
+    samples = exp(1j * theta_hat) * samples;
 
 end

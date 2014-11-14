@@ -6,7 +6,7 @@ function plotSignal(X, Fs)
         X = X';
     end
 
-    [T, F, Y] = DTFT(X, Fs / 10^6, 5);
+    [T, F, Y] = DTFT(X, Fs / 10^6, 0);
 
     figure();
 
