@@ -15,9 +15,11 @@ rxUpsample = 4;
 freqSync = ones(1, 40);
 timingSync = [1 1 0 1 1 0 0 1 1 1 0 1 1 0 1 0 0 1 1 1]*2-1;
 frameSync = [0 0 0 0 1 0 0 1 1 1 0 0 0 0 1 1 1 1 1 0 0 0 0 1 1 1 0 0 1 0 0 0 0]*2-1;
-pilot = ones(1, 10);
+pilot = ones(1, 20);
 messageBits = [0 1 0 1 1 1 0 1 0 1 0 0 0 1 0 0 1 0 1 0 1 0 1 1 1 1 0 1 1 1 0 0 0 0 1 1 0 1 0 1];
-messageBits = [messageBits messageBits messageBits messageBits];
-messageBits = [messageBits messageBits messageBits messageBits];
+messageBits = [messageBits messageBits messageBits messageBits messageBits messageBits messageBits messageBits];
+% messageBits = [ 1 0 1 1 1 1 0 0 0 0 1 1 0 0 1 0 0 1 0 1 0 0 1 1 1 1 0 0 1 0 1 1 0 1 0 1 1 0 1 1 0 1 1 1 1 0 0 1 0 1 1 1 0 0 1 0 1 0 1 0 1 1 1 0 0 1 1 0 1 1 0 1 0 0 1 1 0 1 0 0 0 0 0 0 0 0 0 1 0 1 0 0 0 0 1 0 1 1 1 1 1 1 1 1 0 0 1 1 0 1 0 0 0 0 0 0 0 1 1 1 0 0 1 1 1 1 1 1 1 1 1 1 0 0 1 0 0 0 1 0 1 1 0 0 0 1 1 0 0 1 1 1 1 0 1 1 0 1 1 0 0 0 1 0 0 1 0 0 1 1 0 1 0 0 1 0 0 1 1 1 0 0 0 1 0 0 1 0 1 1 1 1 1 1 0 0 0 1 1 0 0 1 0 0 0 0 0 0 0 1 0 0 1 1 0 0 0 0 1 0 1 1 1 1 1 1 1 0 0 0 1 0 1 1 1 1 1 0 0 1 0 0 0 1 1 1 0 1 1 0 1 0 1 1 0 0 1 0 1 0 0 1 1 1 1 0 1 1 1 1 0 1 1 1 0 0 1 0 0 1 1 0 0 0 1 1 1 1 0 0 0 0 1 1 1 1 1 1 0 1 0 0 1 1 0 0 1 1 0 0 0 0 0 0 1 0 0 1 1 0 ];
 
-messageSize = length(messageBits);
+messageSizeBits = length(messageBits);
+messageSizeSymb = length(messageBits) / nextpow2(M);
+packetSizeInfo = 80; % information symbols

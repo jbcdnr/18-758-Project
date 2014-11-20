@@ -31,7 +31,7 @@ function [T_hat, tau_hat, theta_hat] = doTimingSync(x, timingSync, T, alpha)
         subplot(length(T_primes), 1, sp);
         sp = sp + 1;
         plot(abs(C));
-        title(strcat('T'' = ', num2str(T_prime)));
+        title(strcat('Convolution peaks in timing synchronisation (T''=', num2str(T_prime), ')'));
 
         % find the maximum correlation, and if it is the maximum we've seen
         % so far, record all parameters
