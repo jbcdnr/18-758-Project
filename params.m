@@ -23,3 +23,4 @@ messageBits = [messageBits messageBits messageBits messageBits messageBits messa
 messageSizeBits = length(messageBits);
 messageSizeSymb = length(messageBits) / nextpow2(M);
 packetSizeInfo = 80; % information symbols
+packetSizeTot = length(pilot) + packetSizeInfo;

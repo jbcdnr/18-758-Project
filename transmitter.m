@@ -7,14 +7,12 @@ n = txSamplingFrequency / symbolRate; % samples per symbol
 % Note that we condider the message to be already padded to fit exactly the
 % packet size
 nChunks = messageSizeSymb / packetSizeInfo;
-packetSizeTot = length(pilot) + packetSizeInfo;
 messageSymb = zeros(1, nChunks * packetSizeTot);
-size(messageSymb)
+mb = ((1:nChunks) - 1) * packetSizeInfo * nextpow2(M) + 1;
+ms = ((1:nChunks) - 1) * packetSizeTot + 1;
 for i = 1:nChunks
-   mbi = (i-1) * packetSizeInfo * nextpow2(M) + 1;
-   symbols = M_PSK_encode(messageBits(mbi:mbi + packetSizeInfo * nextpow2(M) - 1), M, 0.9);
-   msi = (i-1) * packetSizeTot + 1;
-   messageSymb(msi : msi + packetSizeTot - 1)  = [ pilot symbols ];
+   symbols = M_PSK_encode(messageBits(mb(i):mb(i) + packetSizeInfo * nextpow2(M) - 1), M, 0.9);
+   messageSymb(ms(i) : ms(i) + packetSizeTot - 1)  = [ pilot symbols ];
 end
 
 symbols = [freqSync timingSync frameSync messageSymb];
