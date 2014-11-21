@@ -9,6 +9,7 @@ function Y = channelDecode(X)
     n = size(g, 2);
 
     nStates = 2^nu;
+    nInputs = 2^k;
 
     % convert g to a 3-dimensional array:
     %  dim 1: k
@@ -23,31 +24,49 @@ function Y = channelDecode(X)
     X = reshape(X, n, []);
     Xlen = size(X, 2);
 
+    tic
+
+    % generate table of state transitions and codes ahead of time
+    nextStateTable = zeros(nStates, nInputs);
+    codedTable = zeros(n, nStates, nInputs);
+    for state = 0:nStates-1
+        % TODO if k > 1, binState must be reshaped to have k rows
+        binState = de2bi(state, nu);
+        for input = 0:nInputs-1
+            binInput = de2bi(input, k);
+            for i = 1:n
+                andResult = G(:, :, i) .* [binInput' binState]; % "and"
+                codedTable(i, state+1, input+1) = ...
+                    mod(sum(sum(andResult)), 2); % "xor"
+            end
+            nextStateTable(state+1, input+1) = ...
+                bi2de([binInput' binState(1:nu-1)]);
+        end
+    end
+
     dist = zeros(nStates, Xlen+1) + Inf;
     dist(1, 1) = 0;
     prevState = zeros(nStates, Xlen+1);
     prevInput = zeros(nStates, Xlen+1);
 
-    % move forward through stages, filling dist and prevState
+    % move forward through stages, filling dist, prevState, and prevInput
     for Xi = 1:Xlen
-        coded = X(:, Xi)';
-        for state = 0:nStates-1
-            % TODO if k > 1, binState must be reshaped to have k rows
-            binState = de2bi(state, nu);
-            for input = 0:2^k-1
-                binInput = de2bi(input, k);
-                % TODO precompute idealCoded for all inputs/states
-                idealCoded = zeros(1, n);
-                for i = 1:n
-                    andResult = G(:, :, i) .* [binInput binState]; % "and"
-                    idealCoded(i) = mod(sum(sum(andResult)), 2); % "xor"
-                end
-                diff = sum(abs(idealCoded - coded));
-                nextState = bi2de([binInput binState(1:nu-1)]);
-                if dist(state+1, Xi) + diff < dist(nextState+1, Xi+1)
-                    dist(nextState+1, Xi+1) = dist(state+1, Xi) + diff;
-                    prevState(nextState+1, Xi+1) = state;
-                    prevInput(nextState+1, Xi+1) = input;
+        % get a column vector of received bits, repeated for each state
+        coded = repmat(X(:, Xi), 1, nStates);
+        for input = 0:nInputs-1
+            % get table of (coded bits, states)
+            idealCoded = codedTable(:, :, input+1);
+            % get row vector of next states
+            nextStates = nextStateTable(:, input+1)';
+            % compute difference for each state
+            diff = sum(abs(idealCoded - coded))';
+            totalDists = dist(:, Xi) + diff;
+            for state = 1:nStates
+                nextState = nextStates(state)+1;
+                if totalDists(state) < dist(nextState, Xi+1)
+                    dist(nextState, Xi+1) = totalDists(state);
+                    prevState(nextState, Xi+1) = state-1;
+                    prevInput(nextState, Xi+1) = input;
                 end
             end
         end
