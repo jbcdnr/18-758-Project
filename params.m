@@ -26,3 +26,4 @@ txCodedBits = channelEncode(txMessageBits);
 messageSizeBits = length(txCodedBits);
 messageSizeSymb = messageSizeBits / nextpow2(M);
 packetSizeInfo = 80; % information symbols
+packetSizeTot = length(pilot) + packetSizeInfo;

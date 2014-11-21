@@ -24,26 +24,29 @@ samples = doSampling(freqSyncSignal, alpha, nSample, T_hat, tau_hat, theta_hat);
 % Frame synchronization
 [cutSamples, ~] = doFrameSync(samples, frameSync);
 
-% Equalization and decoding
+% Equalization and pilot removal
 nChunks = messageSizeSymb / packetSizeInfo;
-packetSizeTot = length(pilot) + packetSizeInfo;
-rxCodedBits = zeros(1, messageSizeBits);
+messageSymbols = zeros(1, messageSizeSymb);
+samp = ((1:nChunks)-1) * packetSizeTot + 1;
+mess = ((1:nChunks)-1) * packetSizeInfo + 1;
 for i = 1:nChunks
-    si = (i-1) * packetSizeTot + 1;
-    samples = cutSamples(si : si+packetSizeTot-1);
-    disp(size(samples));
+    samples = cutSamples(samp(i) : samp(i)+packetSizeTot-1);
     eqSamples = equalize(pilot, samples);
-    messageChunck = M_PSK_decode(eqSamples, M);
-    mi = (i-1) * packetSizeInfo * nextpow2(M) + 1;
-    rxCodedBits(mi : mi + packetSizeInfo * nextpow2(M) - 1) = messageChunck;
+    messageSymbols(mess(i):mess(i) + packetSizeInfo - 1) = eqSamples;
 end
 
-% figure;
-% messageSamples = cutSamples(1:messageSize / nextpow2(M));
-% constelation = [1 1i -1 -1i];
-% plot(real(messageSamples), imag(messageSamples), 'bo', real(constelation), imag(constelation), 'r*');
-% figure;
-% plot(real(messageSymbols), imag(messageSymbols), 'bo', real(constelation), imag(constelation), 'r*');
+constelation = [1 1i -1 -1i];
+figure;
+subplot(1,2,1)
+endMessage = find(abs(cutSamples) > 0.075, 5, 'last');
+plot(real(cutSamples(1:endMessage)), imag(cutSamples(1:endMessage)), 'bo', real(constelation), imag(constelation), 'r*');
+title('Samples before equalization')
+subplot(1,2,2)
+plot(real(messageSymbols), imag(messageSymbols), 'bo', real(constelation), imag(constelation), 'r*');
+title('Samples after equalization')
+
+% symobols to bit decoding
+rxCodedBits = M_PSK_decode(messageSymbols, M);
 
 rxMessageBits = channelDecode(rxCodedBits);
 
