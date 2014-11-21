@@ -11,7 +11,7 @@ messageSymb = zeros(1, nChunks * length(pilot) + messageSizeSymb);
 mb = ((1:nChunks) - 1) * packetSizeInfo * nextpow2(M) + 1;
 ms = ((1:nChunks) - 1) * packetSizeTot + 1;
 for i = 1:nChunks
-   symbols = M_PSK_encode(codedBits(mb(i):min(length(codedBits), mb(i) + packetSizeInfo * nextpow2(M) - 1)), M, 0.9);
+   symbols = M_PSK_encode(txCodedBits(mb(i):min(length(txCodedBits), mb(i) + packetSizeInfo * nextpow2(M) - 1)), M, 0.9);
    messageSymb(ms(i) : min(length(messageSymb), ms(i) + packetSizeTot - 1))  = [ pilot symbols ];
 end
 
