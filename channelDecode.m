@@ -24,8 +24,6 @@ function Y = channelDecode(X)
     X = reshape(X, n, []);
     Xlen = size(X, 2);
 
-    tic
-
     % generate table of state transitions and codes ahead of time
     nextStateTable = zeros(nStates, nInputs);
     codedTable = zeros(n, nStates, nInputs);
