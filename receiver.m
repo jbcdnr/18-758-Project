@@ -18,21 +18,28 @@ plotSignal(freqSyncSignal, Fs);
 
 % Time recovery and sampling for frame sync
 [T_hat, tau_hat, theta_hat] = doTimingSync(freqSyncSignal, timingSync, n, alpha);
-nSample = length(timingSync) + length(frameSync) + (length(pilot) + packetSizeInfo ) * messageSizeSymb / packetSizeInfo + 10;
+nSample = length([timingSync frameSync]) + packetSizeTot * ceil(messageSizeSymb / packetSizeInfo);
 samples = doSampling(freqSyncSignal, alpha, nSample, T_hat, tau_hat, theta_hat);
 
 % Frame synchronization
 [cutSamples, ~] = doFrameSync(samples, frameSync);
 
 % Equalization and pilot removal
-nChunks = messageSizeSymb / packetSizeInfo;
+nChunks = floor(messageSizeSymb / packetSizeInfo);
 messageSymbols = zeros(1, messageSizeSymb);
-samp = ((1:nChunks)-1) * packetSizeTot + 1;
-mess = ((1:nChunks)-1) * packetSizeInfo + 1;
+samp = ((1:nChunks+1)-1) * packetSizeTot + 1;
+mess = ((1:nChunks+1)-1) * packetSizeInfo + 1;
 for i = 1:nChunks
     samples = cutSamples(samp(i) : samp(i)+packetSizeTot-1);
     eqSamples = equalize(pilot, samples);
     messageSymbols(mess(i):mess(i) + packetSizeInfo - 1) = eqSamples;
+end
+
+remainingSamples = mod(messageSizeSymb, packetSizeInfo);
+if remainingSamples ~= 0
+    samples = cutSamples(samp(nChunks + 1) : samp(nChunks + 1) + length(pilot) + remainingSamples - 1);
+    eqSamples = equalize(pilot, samples);
+    messageSymbols(mess(nChunks + 1):mess(nChunks + 1) + remainingSamples - 1) = eqSamples;
 end
 
 constelation = [1 1i -1 -1i];

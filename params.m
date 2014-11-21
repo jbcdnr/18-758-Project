@@ -18,7 +18,6 @@ frameSync = [0 0 0 0 1 0 0 1 1 1 0 0 0 0 1 1 1 1 1 0 0 0 0 1 1 1 0 0 1 0 0 0 0]*
 pilot = ones(1, 20);
 txMessageBits = [0 1 0 1 1 1 0 1 0 1 0 0 0 1 0 0 1 0 1 0 1 0 1 1 1 1 0 1 1 1 0 0 0 0 1 1 0 1 0 1];
 txMessageBits = [txMessageBits txMessageBits txMessageBits txMessageBits txMessageBits txMessageBits txMessageBits txMessageBits];
-% messageBits = [ 1 0 1 1 1 1 0 0 0 0 1 1 0 0 1 0 0 1 0 1 0 0 1 1 1 1 0 0 1 0 1 1 0 1 0 1 1 0 1 1 0 1 1 1 1 0 0 1 0 1 1 1 0 0 1 0 1 0 1 0 1 1 1 0 0 1 1 0 1 1 0 1 0 0 1 1 0 1 0 0 0 0 0 0 0 0 0 1 0 1 0 0 0 0 1 0 1 1 1 1 1 1 1 1 0 0 1 1 0 1 0 0 0 0 0 0 0 1 1 1 0 0 1 1 1 1 1 1 1 1 1 1 0 0 1 0 0 0 1 0 1 1 0 0 0 1 1 0 0 1 1 1 1 0 1 1 0 1 1 0 0 0 1 0 0 1 0 0 1 1 0 1 0 0 1 0 0 1 1 1 0 0 0 1 0 0 1 0 1 1 1 1 1 1 0 0 0 1 1 0 0 1 0 0 0 0 0 0 0 1 0 0 1 1 0 0 0 0 1 0 1 1 1 1 1 1 1 0 0 0 1 0 1 1 1 1 1 0 0 1 0 0 0 1 1 1 0 1 1 0 1 0 1 1 0 0 1 0 1 0 0 1 1 1 1 0 1 1 1 1 0 1 1 1 0 0 1 0 0 1 1 0 0 0 1 1 1 1 0 0 0 0 1 1 1 1 1 1 0 1 0 0 1 1 0 0 1 1 0 0 0 0 0 0 1 0 0 1 1 0 ];
 
 % TODO put coding parameters in here too
 txCodedBits = channelEncode(txMessageBits);
