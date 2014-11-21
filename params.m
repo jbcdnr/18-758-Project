@@ -16,10 +16,13 @@ freqSync = ones(1, 40);
 timingSync = [1 1 0 1 1 0 0 1 1 1 0 1 1 0 1 0 0 1 1 1]*2-1;
 frameSync = [0 0 0 0 1 0 0 1 1 1 0 0 0 0 1 1 1 1 1 0 0 0 0 1 1 1 0 0 1 0 0 0 0]*2-1;
 pilot = ones(1, 20);
-messageBits = [0 1 0 1 1 1 0 1 0 1 0 0 0 1 0 0 1 0 1 0 1 0 1 1 1 1 0 1 1 1 0 0 0 0 1 1 0 1 0 1];
-messageBits = [messageBits messageBits messageBits messageBits messageBits messageBits messageBits messageBits];
+txMessageBits = [0 1 0 1 1 1 0 1 0 1 0 0 0 1 0 0 1 0 1 0 1 0 1 1 1 1 0 1 1 1 0 0 0 0 1 1 0 1 0 1];
+txMessageBits = [txMessageBits txMessageBits txMessageBits txMessageBits txMessageBits txMessageBits txMessageBits txMessageBits];
 % messageBits = [ 1 0 1 1 1 1 0 0 0 0 1 1 0 0 1 0 0 1 0 1 0 0 1 1 1 1 0 0 1 0 1 1 0 1 0 1 1 0 1 1 0 1 1 1 1 0 0 1 0 1 1 1 0 0 1 0 1 0 1 0 1 1 1 0 0 1 1 0 1 1 0 1 0 0 1 1 0 1 0 0 0 0 0 0 0 0 0 1 0 1 0 0 0 0 1 0 1 1 1 1 1 1 1 1 0 0 1 1 0 1 0 0 0 0 0 0 0 1 1 1 0 0 1 1 1 1 1 1 1 1 1 1 0 0 1 0 0 0 1 0 1 1 0 0 0 1 1 0 0 1 1 1 1 0 1 1 0 1 1 0 0 0 1 0 0 1 0 0 1 1 0 1 0 0 1 0 0 1 1 1 0 0 0 1 0 0 1 0 1 1 1 1 1 1 0 0 0 1 1 0 0 1 0 0 0 0 0 0 0 1 0 0 1 1 0 0 0 0 1 0 1 1 1 1 1 1 1 0 0 0 1 0 1 1 1 1 1 0 0 1 0 0 0 1 1 1 0 1 1 0 1 0 1 1 0 0 1 0 1 0 0 1 1 1 1 0 1 1 1 1 0 1 1 1 0 0 1 0 0 1 1 0 0 0 1 1 1 1 0 0 0 0 1 1 1 1 1 1 0 1 0 0 1 1 0 0 1 1 0 0 0 0 0 0 1 0 0 1 1 0 ];
 
-messageSizeBits = length(messageBits);
-messageSizeSymb = length(messageBits) / nextpow2(M);
+% TODO put coding parameters in here too
+txCodedBits = channelEncode(txMessageBits);
+
+messageSizeBits = length(txCodedBits);
+messageSizeSymb = messageSizeBits / nextpow2(M);
 packetSizeInfo = 80; % information symbols

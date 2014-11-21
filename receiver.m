@@ -27,7 +27,7 @@ samples = doSampling(freqSyncSignal, alpha, nSample, T_hat, tau_hat, theta_hat);
 % Equalization and decoding
 nChunks = messageSizeSymb / packetSizeInfo;
 packetSizeTot = length(pilot) + packetSizeInfo;
-rxMessageBits = zeros(1, messageSizeBits);
+rxCodedBits = zeros(1, messageSizeBits);
 for i = 1:nChunks
     si = (i-1) * packetSizeTot + 1;
     samples = cutSamples(si : si+packetSizeTot-1);
@@ -35,7 +35,7 @@ for i = 1:nChunks
     eqSamples = equalize(pilot, samples);
     messageChunck = M_PSK_decode(eqSamples, M);
     mi = (i-1) * packetSizeInfo * nextpow2(M) + 1;
-    rxMessageBits(mi : mi + packetSizeInfo * nextpow2(M) - 1) = messageChunck;
+    rxCodedBits(mi : mi + packetSizeInfo * nextpow2(M) - 1) = messageChunck;
 end
 
 % figure;
@@ -45,5 +45,9 @@ end
 % figure;
 % plot(real(messageSymbols), imag(messageSymbols), 'bo', real(constelation), imag(constelation), 'r*');
 
-BER = sum(rxMessageBits ~= messageBits) / length(rxMessageBits);
+rxMessageBits = channelDecode(rxCodedBits);
+
+codedBER = sum(rxCodedBits ~= txCodedBits) / length(rxCodedBits);
+BER = sum(rxMessageBits ~= txMessageBits) / length(rxMessageBits);
+fprintf('Coded BER = %f\n', codedBER);
 fprintf('BER = %f\n', BER);
