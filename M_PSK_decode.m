@@ -3,10 +3,11 @@ function bitSequence = M_PSK_decode(symbolSequence, M)
     b = nextpow2(M);
     bitSequence = zeros(1, length(symbolSequence) * b);
     
+    value = mod(round(angle(symbolSequence) * (M / (2*pi))), M);
+    value = gray2bin(value, 'psk', M);
+    
     for i = 1:length(symbolSequence)
-        symbol = symbolSequence(i);
-        value = mod(round(angle(symbol) * M / (2*pi)), M);
-        bits = dec2binary(value, b);
+        bits = dec2binary(value(i), b);
         
         index = (i-1) * b + 1;
         bitSequence(index:index+b-1) = bits;
