@@ -15,6 +15,6 @@ function samples = doSampling(x, alpha, nSamples, T_hat, tau_hat, theta_hat)
         samples(i) = sum(srrc(t, alpha, T_hat) .* x);
     end
 
-    samples = exp(1j * theta_hat) * samples;
+    samples = exp(1j * -theta_hat) * samples;
 
 end
