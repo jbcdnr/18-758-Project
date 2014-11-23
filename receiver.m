@@ -10,10 +10,14 @@ n = Fs / symbolRate; % samples per symbol
 
 % Signal processing
 
-start = find(abs(receivedsignal) > 0.075, 1);
+start = find(abs(receivedsignal) > 0.075, 1) + length(warmup)*n;
 
 % Carrier recovery
 freqSyncSignal = doFreqSync(receivedsignal, start, freqSync, Fs, n);
+
+%figure;
+%plot((0:length(freqSyncSignal)-1)' / Fs * 10^6, angle(freqSyncSignal));
+plotSignal(receivedsignal, Fs);
 plotSignal(freqSyncSignal, Fs);
 
 % Time recovery and sampling for frame sync

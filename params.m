@@ -12,7 +12,8 @@ txPad = 32;   % extra 0 symbols to transmit on either side of message
 rxUpsample = 4;
 
 % transmit signal sync sequences
-freqSync = ones(1, 40);
+warmup = ones(1, 250*10^-6 * symbolRate);
+freqSync = ones(1, 100);
 timingSync = [1 1 0 1 1 0 0 1 1 1 0 1 1 0 1 0 0 1 1 1]*2-1;
 frameSync = [0 0 0 0 1 0 0 1 1 1 0 0 0 0 1 1 1 1 1 0 0 0 0 1 1 1 0 0 1 0 0 0 0]*2-1;
 pilot = ones(1, 20);
