@@ -17,8 +17,12 @@ freqSync = ones(1, 100);
 timingSync = [1 1 0 1 1 0 0 1 1 1 0 1 1 0 1 0 0 1 1 1]*2-1;
 frameSync = [0 0 0 0 1 0 0 1 1 1 0 0 0 0 1 1 1 1 1 0 0 0 0 1 1 1 0 0 1 0 0 0 0]*2-1;
 pilot = ones(1, 20);
-txMessageBits = [0 1 0 1 1 1 0 1 0 1 0 0 0 1 0 0 1 0 1 0 1 0 1 1 1 1 0 1 1 1 0 0 0 0 1 1 0 1 0 1];
-txMessageBits = [txMessageBits txMessageBits txMessageBits txMessageBits txMessageBits txMessageBits txMessageBits txMessageBits];
+
+imageDimension = [66 46];
+imageSize = imageDimension(1) * imageDimension(2);
+imageFile = strcat('images/shannon', int2str(imageSize), '.bmp');
+txImage = imread(imageFile);
+txMessageBits = reshape(txImage, [1 imageSize]);
 
 % TODO put coding parameters in here too
 txCodedBits = channelEncode(txMessageBits);

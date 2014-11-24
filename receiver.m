@@ -60,8 +60,11 @@ title('Samples after equalization')
 rxCodedBits = M_PSK_decode(messageSymbols, M);
 
 rxMessageBits = channelDecode(rxCodedBits);
-
-codedBER = sum(rxCodedBits ~= txCodedBits) / length(rxCodedBits);
-BER = sum(rxMessageBits ~= txMessageBits) / length(rxMessageBits);
-fprintf('Coded BER = %f\n', codedBER);
-fprintf('BER = %f\n', BER);
+rxImage = reshape(rxMessageBits, imageDimension);
+figure
+subplot(1,2,1)
+imshow(txImage)
+title('Image transmitted')
+subplot(1,2,2)
+imshow(rxImage)
+title('Image received')
