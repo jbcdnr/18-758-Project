@@ -46,7 +46,6 @@ if remainingSamples ~= 0
     messageSymbols(mess(nChunks + 1):mess(nChunks + 1) + remainingSamples - 1) = eqSamples;
 end
 
-constelation = [1 1i -1 -1i];
 figure;
 subplot(1,2,1)
 endMessage = find(abs(cutSamples) > 0.075, 5, 'last');
@@ -58,8 +57,13 @@ title('Samples after equalization')
 
 % symobols to bit decoding
 rxCodedBits = M_PSK_decode(messageSymbols, M);
-
 rxMessageBits = channelDecode(rxCodedBits);
+
+codedBER = sum(rxCodedBits ~= txCodedBits) / length(rxCodedBits);
+BER = sum(rxMessageBits ~= txMessageBits) / length(rxMessageBits);
+fprintf('Coded BER = %f\n', codedBER);
+fprintf('BER = %f\n', BER);
+
 rxImage = reshape(rxMessageBits, imageDimension);
 figure
 subplot(1,2,1)

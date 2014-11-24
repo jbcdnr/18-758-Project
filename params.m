@@ -5,6 +5,10 @@ symbolRate          = 12.5 * 10^6; % Hz
 
 % signal parameters
 M = 4;        % size of constelation
+constelation = zeros(1,M);
+for i = 0:M-1
+    constelation(i+1) = M_PSK_encode(de2bi(i, nextpow2(M)),M,1);
+end
 alpha = 0.25; % SRRC coefficient
 txPad = 32;   % extra 0 symbols to transmit on either side of message
 
