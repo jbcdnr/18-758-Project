@@ -1,4 +1,4 @@
-function [T_hat, tau_hat, theta_hat] = doTimingSync(x, timingSync, T, alpha)
+function [T_hat, tau_hat, theta_hat, pulse, center] = doTimingSync(x, timingSync, T, alpha)
 % x          The received signal, after carrier recovery
 % timingSync The symbols expected for the timing sync frame
 % T          The expected symbol period in samples
@@ -11,6 +11,8 @@ function [T_hat, tau_hat, theta_hat] = doTimingSync(x, timingSync, T, alpha)
     T_hat = 0;
     tau_hat = 0;
     theta_hat = 0;
+    pulse = [];
+    center = 0;
 
     % TODO try more values...?
     T_primes = [T-1 T T+1];
@@ -19,9 +21,13 @@ function [T_hat, tau_hat, theta_hat] = doTimingSync(x, timingSync, T, alpha)
     sp = 1;
 
     for T_prime = T_primes
-
+        
+        % Create the pulse centered
+        pulseCenterRx = 500;
+        pulseRx = srrc(-pulseCenterRx:pulseCenterRx, alpha, T);
+        
         % calculate expected timing frame
-        timingSignal = applyPulse(timingSync, T_prime, alpha);
+        timingSignal = applyPulse(timingSync, pulseRx, pulseCenterRx, T_prime);
 
         % correlate that with entire signal
         % TODO should search smaller window
@@ -41,6 +47,8 @@ function [T_hat, tau_hat, theta_hat] = doTimingSync(x, timingSync, T, alpha)
             T_hat = T_prime;
             tau_hat = lag(i_max);
             theta_hat = angle(C(i_max));
+            pulse = pulseRx;
+            center = pulseCenterRx;
         end
     end
 

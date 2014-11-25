@@ -21,9 +21,9 @@ plotSignal(receivedsignal, Fs);
 plotSignal(freqSyncSignal, Fs);
 
 % Time recovery and sampling for frame sync
-[T_hat, tau_hat, theta_hat] = doTimingSync(freqSyncSignal, timingSync, n, alpha);
+[T_hat, tau_hat, theta_hat, rxPulse, rxCenterPulse] = doTimingSync(freqSyncSignal, timingSync, n, alpha);
 nSample = length([timingSync frameSync]) + packetSizeTot * ceil(messageSizeSymb / packetSizeInfo);
-samples = doSampling(freqSyncSignal, alpha, nSample, T_hat, tau_hat, theta_hat);
+samples = doSampling(freqSyncSignal, nSample, T_hat, tau_hat, theta_hat, rxPulse, rxCenterPulse);
 
 % Frame synchronization
 [cutSamples, ~] = doFrameSync(samples, frameSync);
