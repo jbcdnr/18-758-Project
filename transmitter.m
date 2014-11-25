@@ -1,7 +1,5 @@
 params;
 
-fprintf('Transmitting message of %d bits\n', messageSizeBits);
-
 n = txSamplingFrequency / symbolRate; % samples per symbol
 
 % Note that we condider the message to be already padded to fit exactly the
@@ -16,6 +14,8 @@ for i = 1:nChunks
 end
 
 symbols = [warmup freqSync timingSync frameSync messageSymb];
+
+fprintf('Transmitting message of %d bits in %d us\n', messageSizeBits, ceil(length(symbols) / symbolRate * 10^6));
 
 padding = zeros(1, txPad);
 X = applyPulse([padding symbols padding], n, alpha);
