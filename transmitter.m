@@ -17,8 +17,12 @@ symbols = [warmup freqSync timingSync frameSync messageSymb];
 
 fprintf('Transmitting message of %d bits in %d us\n', messageSizeBits, ceil(length(symbols) / symbolRate * 10^6));
 
+% Create the pulse centered
+pulseCenterTx = 500;
+pulseTx = srrc(-pulseCenterTx:pulseCenterTx, alpha, n);
+
 padding = zeros(1, txPad);
-X = applyPulse([padding symbols padding], n, alpha);
+X = applyPulse([padding symbols padding], pulseTx, pulseCenterTx, n);
 X = 0.9 * X / max(abs(X));
 
 plotSignal(X, txSamplingFrequency);
