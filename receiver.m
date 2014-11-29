@@ -57,7 +57,10 @@ title('Samples after equalization')
 
 % symobols to bit decoding
 rxCodedBits = M_PSK_decode(messageSymbols, M);
-rxMessageBits = channelDecode(rxCodedBits);
+rxMessageBits = channelDecode(rxCodedBits, g, nu);
+
+rxMessageBits = reshape(rxMessageBits, [], interleave);
+rxMessageBits = reshape(rxMessageBits', 1, []);
 
 codedBER = sum(rxCodedBits ~= txCodedBits) / length(rxCodedBits);
 BER = sum(rxMessageBits ~= txMessageBits) / length(rxMessageBits);

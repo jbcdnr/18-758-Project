@@ -29,3 +29,8 @@ plotSignal(X, txSamplingFrequency);
 
 transmitsignal = X;
 save('transmitsignal.mat', 'transmitsignal');
+
+if length(transmitsignal) > 800 * 10^-6 * txSamplingFrequency
+    fprintf('ERROR: signal is too long, has %d samples\n', ...
+        length(transmitsignal));
+end

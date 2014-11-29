@@ -1,20 +1,21 @@
-function Y = channelEncode(X)
+function Y = channelEncode(X, g, nu)
 % X The information bits
 % Y The coded bits
+% g  The table describing the trellis
+% nu The number of bits of past state
 
-    % rate 1/3
-    g = oct2dec([367 331 225]);
-    nu = 7;
     k = size(g, 1);
     n = size(g, 2);
 
+    nPastBits = ceil(nu/k);
+
     % convert g to a 3-dimensional array:
     %  dim 1: k
-    %  dim 2: nu+1, one for each bit in octal number
+    %  dim 2: nPastBits+1, one for each bit in octal number
     %  dim 3: n
     G = [];
     for i = 1:n
-        G = cat(3, G, de2bi(g(:, i), nu+1));
+        G = cat(3, G, de2bi(g(:, i), nPastBits+1));
     end
 
     % ensure we have k rows to group bits by stage
@@ -27,10 +28,10 @@ function Y = channelEncode(X)
     Yi = 1;
 
     % for each column (size k), emit n coded bits
-    state = zeros(k, nu+1);
+    state = zeros(k, nPastBits+1);
     for info = X
         % push info into front of state
-        state = [info state(1:nu)];
+        state = [info state(:,1:nPastBits)];
         % for each output bit, do "xor" computation
         for i = 1:n
             andResult = G(:, :, i) .* state; % "and"
