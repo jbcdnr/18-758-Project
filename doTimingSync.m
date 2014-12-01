@@ -5,12 +5,10 @@ pulseCenterRx = 500;
 pulseRx = srrc(-pulseCenterRx:pulseCenterRx, alpha, T);
 
 % calculate expected timing frame
-% sign = applyPulse(sign, pulseRx, pulseCenterRx, T);
+timingSync = applyPulse(timingSync, pulseRx, pulseCenterRx, T);
 
 % correlate that with entire signal
-disp('before')
 [C, lag] = xcorr(sign, timingSync);
-disp('after')
 
 % plot it
 figure;

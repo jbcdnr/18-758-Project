@@ -17,12 +17,8 @@ plotSignal(receivedsignal, Fs);
 
 % Time recovery and sampling for frame sync
 [T_hat, tau_hat, signal] = doTimingSync(receivedsignal, timingSync, n, alpha);
-
-T_hat
-tau_hat
 nSample = length(timingSync) + packetSizeTot * ceil(messageSizeSymb / packetSizeInfo);
 samples = doSampling(signal, nSample, T_hat, tau_hat);
-
 
 % Equalization and pilot removal
 nChunks = floor(messageSizeSymb / packetSizeInfo);
