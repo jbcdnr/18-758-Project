@@ -13,7 +13,7 @@ for i = 1:nChunks
    messageSymb(ms(i) : min(length(messageSymb), ms(i) + packetSizeTot - 1))  = [ pilot symbols ];
 end
 
-symbols = [warmup freqSync timingSync frameSync messageSymb];
+symbols = [timingSync messageSymb];
 
 fprintf('Transmitting message of %d bits in %d us\n', messageSizeBits, ceil(length(symbols) / symbolRate * 10^6));
 
