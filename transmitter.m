@@ -1,5 +1,4 @@
 params;
-
 n = txSamplingFrequency / symbolRate; % samples per symbol
 
 % Note that we condider the message to be already padded to fit exactly the

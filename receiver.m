@@ -18,7 +18,11 @@ plotSignal(receivedsignal, Fs);
 % Time recovery and sampling for frame sync
 [T_hat, tau_hat, signal] = doTimingSync(receivedsignal, timingSync, n, alpha);
 nSample = length(timingSync) + packetSizeTot * ceil(messageSizeSymb / packetSizeInfo);
-samples = doSampling(signal, nSample, T_hat, tau_hat);
+samples = doSampling(signal(tau_hat:length(signal)), nSample, T_hat, tau_hat);
+
+figure;
+t = 1:length(samples);
+plot(t, real(samples), 'b', t, imag(samples), 'r')
 
 % Equalization and pilot removal
 nChunks = floor(messageSizeSymb / packetSizeInfo);
@@ -26,8 +30,8 @@ messageSymbols = zeros(1, messageSizeSymb);
 samp = ((1:nChunks+1)-1) * packetSizeTot + 1;
 mess = ((1:nChunks+1)-1) * packetSizeInfo + 1;
 for i = 1:nChunks
-    samples = samples(samp(i) : samp(i)+packetSizeTot-1);
-    eqSamples = equalize(pilot, samples);
+    s = samples(samp(i) : samp(i)+packetSizeTot-1);
+    eqSamples = equalize(pilot, s);
     messageSymbols(mess(i):mess(i) + packetSizeInfo - 1) = eqSamples;
 end
 
