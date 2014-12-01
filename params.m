@@ -39,9 +39,7 @@ interleave = 20;
 g = oct2dec([34 31 17; 3 16 15]);
 nu = 7;
 
-txMessageBitsInterleaved = reshape(txMessageBits, interleave, []);
-txMessageBitsInterleaved = reshape(txMessageBitsInterleaved', 1, []);
-txCodedBits = channelEncode(txMessageBitsInterleaved, g, nu);
+txCodedBits = channelEncode(txMessageBits, g, nu);
 
 messageSizeBits = length(txCodedBits);
 messageSizeSymb = messageSizeBits / nextpow2(M);
