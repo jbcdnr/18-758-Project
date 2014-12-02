@@ -63,6 +63,7 @@ BER = sum(rxMessageBits ~= txMessageBits) / length(rxMessageBits);
 fprintf('Coded BER = %f\n', codedBER);
 fprintf('BER = %f\n', BER);
 
+rxMessageBits = rxMessageBits(1:length(rxMessageBits)-2);
 rxImage = reshape(rxMessageBits, imageDimension);
 figure
 subplot(1,2,1)
