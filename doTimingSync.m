@@ -1,4 +1,4 @@
-function [T_hat, tau_hat, sign] = doTimingSync(sign, timingSync, T, alpha)
+function [T_hat, tau_hat] = doTimingSync(sign, timingSync, T, alpha)
 
 % Create the pulse centered
 pulseCenterRx = 500;
