@@ -66,9 +66,12 @@ fprintf('BER = %f\n', BER);
 rxMessageBits = rxMessageBits(1:length(rxMessageBits)-2);
 rxImage = reshape(rxMessageBits, imageDimension);
 figure
-subplot(1,2,1)
+subplot(1,3,1)
 imshow(txImage)
 title('Image transmitted')
-subplot(1,2,2)
+subplot(1,3,2)
 imshow(rxImage)
 title('Image received')
+subplot(1,3,3)
+imshow(1-abs(rxImage-txImage))
+title('Pixel errors')
