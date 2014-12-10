@@ -14,6 +14,41 @@
 \date{\today}
 \maketitle
 
+
+\section{Pulse}
+
+  
+
+\section{Timing sync}
+
+We use a simplified version of the timing synchronization we have seen in class. We use a random sequence of symbols that is highly uncorrelated, such that we see a high peak during the correlation of the message and the timing synchronization (see plot). Then we get $\hat\tau$ and know where the signal starts exactly. 
+
+% Todo correlation plot
+
+\section{One-tap equalizer}
+
+We are using a one-tap equalizer for each segment of the message. We send 5-length symbols pilot every 120 symbols of information. The one tap equalizer uses the following formula :
+
+\[
+  h_0 = \frac{\text{txPilot} \cdot \text{rxPilot}}{\text{txPilot}^2}
+  \hspace{2cm}
+  \text{eqMessage} = \frac{\text{message}}{h_0}
+\]
+
+The equalization is very efficient as we can see on the following plot. Even if the pilot sequence is very short, the $h_0$ is still precise and equalize well the received segment of the message. It corrects the phase drift and the modulus of the signal. 
+
+% Todo equalizer plot
+
+\section{Constellation}
+
+We are using a 4-PSK constelation. 
+
+\section{Channel Coding}
+
+
+\section{Conclusion}
+
+
 \clearpage
 \appendix
 \file{params.m}
