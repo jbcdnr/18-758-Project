@@ -1,8 +1,7 @@
-function [T_hat, tau_hat] = doTimingSync(sign, timingSync, T, alpha)
+function tau_hat = doTimingSync(sign, timingSync, T, alpha)
 
-% Create the pulse centered
-pulseCenterRx = 500;
-pulseRx = srrc(-pulseCenterRx:pulseCenterRx, alpha, T);
+% Create the centered pulse
+pulseRx = srrc(-pulseCenter:pulseCenter, alpha, T);
 
 % calculate expected timing frame
 timingSync = applyPulse(timingSync, pulseRx, pulseCenterRx, T);
@@ -18,6 +17,5 @@ title('Convolution peaks in timing synchronisation');
 % find the maximum correlation
 [~, i_max] = max(C);
 tau_hat = lag(i_max);
-T_hat = T;
 
 end

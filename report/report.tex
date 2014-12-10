@@ -5,6 +5,8 @@
 \usepackage{graphicx}
 \usepackage[framed,numbered,autolinebreaks,useliterate]{mcode}
 
+\newcommand{\file}[1]{\section{#1}\lstinputlisting{../#1}}
+
 \begin{document}
 
 \title{18-758 Project Report}
@@ -12,6 +14,17 @@
 \date{\today}
 \maketitle
 
-\lstinputlisting{../doSampling.m}
+\clearpage
+\appendix
+\file{params.m}
+\file{receiver.m}
+\file{transmitter.m}
+\file{doTimingSync.m}
+\file{doSampling.m}
+\file{applyPulse.m}
+\file{channelEncode.m}
+\file{channelDecode.m}
+\file{plotSignal.m}
+\file{DTFT.m}
 
 \end{document}

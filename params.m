@@ -12,6 +12,9 @@ end
 alpha = 0.25; % SRRC coefficient
 txPad = 32;   % extra 0 symbols to transmit on either side of message
 
+
+pulseCenter = 500;
+
 % receive paramters
 rxUpsample = 4;
 
