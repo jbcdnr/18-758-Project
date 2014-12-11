@@ -71,13 +71,19 @@ worked better, but it was then too hard to fit the entire message into
 
 \section{Timing sync}
 
-We use a simplified version of the timing synchronization we have seen in class. We use a random sequence of symbols that is highly uncorrelated, such that we see a high peak during the correlation of the message and the timing synchronization (see plot). Then we get $\hat\tau$ and know where the signal starts exactly. 
+We use a simplified version of the timing synchronization we have seen in class. We use a random sequence of symbols that is highly uncorrelated, such that we see a high peak during the correlation of the message and the timing synchronization (figure~\ref{fig:timing}). Then we get $\hat\tau$ and know where the signal starts exactly.
 
-% Todo correlation plot
+In a previous version of the project, we were also reestimating the symbol period by taking the highest correlation peak with $T\in\{7,8,9\}$. But as we have seen that for all our trial, the symbol period for the receiver was always 8 we removed this part and took for granted that \(T_{rx} = T_{tx} = 8\text{ samples}\).
+
+\begin{figure}
+  \centering\includegraphics[width=\textwidth]{../presentation/timing.png}
+  \caption{Cross-correlation of the signal and the timing synchronization preambule}
+  \label{fig:timing}
+\end{figure}
 
 \section{One-tap equalizer}
 
-We are using a one-tap equalizer for each segment of the message. We send 5-length symbols pilot every 120 symbols of information. The one tap equalizer uses the following formula :
+We are using a one-tap equalizer for each segment of the message. We send a 5-length symbols pilot (all one) every 120 symbols of information. The one tap equalizer uses the following formula :
 
 \[
   h_0 = \frac{\text{txPilot} \cdot \text{rxPilot}}{\text{txPilot}^2}
@@ -85,13 +91,20 @@ We are using a one-tap equalizer for each segment of the message. We send 5-leng
   \text{eqMessage} = \frac{\text{message}}{h_0}
 \]
 
-The equalization is very efficient as we can see on the following plot. Even if the pilot sequence is very short, the $h_0$ is still precise and equalize well the received segment of the message. It corrects the phase drift and the modulus of the signal. 
+The equalization is very efficient as we can see in figure~\ref{fig:eq}. Even if the pilot sequence is very short, the $h_0$ is still precise and equalize well the received segment of the message. It corrects the phase drift and the gain of the signal. 
+
+
+\begin{figure}
+  \centering\includegraphics[width=\textwidth]{../presentation/eq.png}
+  \caption{One message segment before and after equalization}
+  \label{fig:eq}
+\end{figure}
 
 % Todo equalizer plot
 
 \section{Constellation}
 
-We are using a 4-PSK constelation. 
+We are using a 4-PSK constelation with gray encoding to limit the number of bit affected by a transmission error. We have tried to use 8-PSK but with our other parameters, it wasn't efficient enough. As you can in figure~\ref{fig:8psk}, the equalization is not good enough to cluster the received points arround the constellation points, then the decoding was generating a big BER. That's why we decided to stay with a 4-PSK constellation, which as you can see in figure~\ref{fig:4psk} is quite efficient and has a good BER.
 
 \begin{figure}
   \centering\includegraphics[width=\textwidth]{../presentation/8psk.png}
@@ -149,13 +162,10 @@ always appears near the end of the image, such as due to the drifting phase of
 the signal. This could also be due to a bug in the Viterbi decoding.
 Interleaving may help alleviate some of these problems.
 
-\section{Conclusion}
-
 % TODO add some more images of received signals
 
 \begin{figure}
-  % TODO final images
-  %\centering\includegraphics[width=\textwidth]{}
+  \centering\includegraphics[width=\textwidth]{../presentation/images.png}
   \caption{Transmitted and Received Images}
   \label{fig:pics}
 \end{figure}
