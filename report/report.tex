@@ -2,11 +2,12 @@
 
 \usepackage{enumerate}
 \usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
 \usepackage{amsmath, amssymb}
 \usepackage{graphicx}
 \usepackage[framed,numbered,autolinebreaks,useliterate]{mcode}
 
-\newcommand{\file}[1]{\section{#1}\lstinputlisting{../#1}}
+\newcommand{\file}[1]{\section{\protect\detokenize{#1}}\lstinputlisting{../#1}}
 
 \begin{document}
 
@@ -54,7 +55,7 @@ found that the periodic channel re-estimation is sufficient to handle the
 gradual phase drift.
 
 Initially we had a string of 40 ones at the start of the packet, and then the
-receiver would search for a peak in the discrete fourier transform of the
+receiver would search for a peak in the discrete Fourier transform of the
 starting sequence and apply a correction to the whole received signal. However,
 this was ineffective because of the wildly fluctuating phase at the start of the
 signal, which can be seen in figure~\ref{fig:phase}. Next we tried throwing out
@@ -73,11 +74,17 @@ worked better, but it was then too hard to fit the entire message into
 
 We use a simplified version of the timing synchronization we have seen in class. We use a random sequence of symbols that is highly uncorrelated, such that we see a high peak during the correlation of the message and the timing synchronization (figure~\ref{fig:timing}). Then we get $\hat\tau$ and know where the signal starts exactly.
 
+In order to get the best results from the timing synchronization, we upsample
+the received signal by a factor of four. The precision of the timing
+synchronization is limited by the sampling frequency, so upsampling allows the
+timing synchronization to be more effective. This also conveniently made the
+received sample rate the same as the transmitted sample rate.
+
 In a previous version of the project, we were also reestimating the symbol period by taking the highest correlation peak with $T\in\{7,8,9\}$. But as we have seen that for all our trial, the symbol period for the receiver was always 8 we removed this part and took for granted that \(T_{rx} = T_{tx} = 8\text{ samples}\).
 
 \begin{figure}
   \centering\includegraphics[width=\textwidth]{../presentation/timing.png}
-  \caption{Cross-correlation of the signal and the timing synchronization preambule}
+  \caption{Cross-correlation of the signal and the timing synchronization preamble}
   \label{fig:timing}
 \end{figure}
 
@@ -91,7 +98,7 @@ We are using a one-tap equalizer for each segment of the message. We send a 5-le
   \text{eqMessage} = \frac{\text{message}}{h_0}
 \]
 
-The equalization is very efficient as we can see in figure~\ref{fig:eq}. Even if the pilot sequence is very short, the $h_0$ is still precise and equalize well the received segment of the message. It corrects the phase drift and the gain of the signal. 
+The equalization is very efficient as we can see in figure~\ref{fig:eq}. Even if the pilot sequence is very short, the $h_0$ is still precise and equalizes well the received segment of the message. It corrects the phase drift and the gain of the signal. 
 
 
 \begin{figure}
@@ -100,11 +107,9 @@ The equalization is very efficient as we can see in figure~\ref{fig:eq}. Even if
   \label{fig:eq}
 \end{figure}
 
-% Todo equalizer plot
-
 \section{Constellation}
 
-We are using a 4-PSK constelation with gray encoding to limit the number of bit affected by a transmission error. We have tried to use 8-PSK but with our other parameters, it wasn't efficient enough. As you can in figure~\ref{fig:8psk}, the equalization is not good enough to cluster the received points arround the constellation points, then the decoding was generating a big BER. That's why we decided to stay with a 4-PSK constellation, which as you can see in figure~\ref{fig:4psk} is quite efficient and has a good BER.
+We are using a 4-PSK constellation with gray encoding to limit the number of bits affected by a transmission error. We have tried to use 8-PSK but with our other parameters, it wasn't efficient enough. As you can in figure~\ref{fig:8psk}, the equalization is not good enough to cluster the received points around the constellation points, then the decoding was generating a big BER. That's why we decided to stay with a 4-PSK constellation, which as you can see in figure~\ref{fig:4psk} is quite efficient and has a good BER.
 
 \begin{figure}
   \centering\includegraphics[width=\textwidth]{../presentation/8psk.png}
@@ -177,9 +182,12 @@ Interleaving may help alleviate some of these problems.
 \file{receiver.m}
 \file{transmitter.m}
 \file{doTimingSync.m}
+\file{equalize.m}
 \file{doSampling.m}
 \file{srrc.m}
 \file{applyPulse.m}
+\file{M_PSK_encode.m}
+\file{M_PSK_decode.m}
 \file{channelEncode.m}
 \file{channelDecode.m}
 \file{plotSignal.m}
